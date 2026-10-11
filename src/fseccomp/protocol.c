@@ -101,7 +101,9 @@ void protocol_print(void) {
 
 	int i = 0;
 	while (protocol[i] != NULL) {
-		printf("%s, ", protocol[i]);
+		if (i > 0)
+			printf(",");
+		printf("%s", protocol[i]);
 		i++;
 	}
 	printf("\n");

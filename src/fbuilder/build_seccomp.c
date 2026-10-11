@@ -167,24 +167,36 @@ void build_protocol(const char *fname, FILE *fp) {
 
 	int net = 0;
 	if (unix_s || inet || inet6 || netlink || packet || bluetooth) {
+		int first = 1;
+		#define PRINT_PROTOCOL(name) \
+			do { \
+				if (!first) \
+					fprintf(fp, ","); \
+				fprintf(fp, "%s", (name)); \
+				first = 0; \
+			} while (0)
+
 		fprintf(fp, "protocol ");
 		if (unix_s)
-			fprintf(fp, "unix,");
+			PRINT_PROTOCOL("unix");
 		if (inet || inet6) {
-			fprintf(fp, "inet,inet6,");
+			PRINT_PROTOCOL("inet");
+			PRINT_PROTOCOL("inet6");
 			net = 1;
 		}
-		if (netlink)
-			fprintf(fp, "netlink,");
+		if (netlink) {
+			PRINT_PROTOCOL("netlink");
+		}
 		if (packet) {
-			fprintf(fp, "packet,");
+			PRINT_PROTOCOL("packet");
 			net = 1;
 		}
 		if (bluetooth) {
-			fprintf(fp, "bluetooth");
+			PRINT_PROTOCOL("bluetooth");
 			net = 1;
 		}
 		fprintf(fp, "\n");
+		#undef PRINT_PROTOCOL
 	}
 
 	if (net == 0)
